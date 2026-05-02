@@ -50,9 +50,9 @@ public class FinancialService {
                 .map(o -> o.getCogsAmount() != null ? o.getCogsAmount() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalYocoFees = paymentTransactionRepository.findAll().stream()
-                .filter(pt -> pt.getCreatedAt() != null && !pt.getCreatedAt().isBefore(start) && pt.getCreatedAt().isBefore(end))
-                .filter(pt -> pt.getStatus() == PaymentTransaction.Status.SUCCEEDED)
+        BigDecimal totalYocoFees = paymentTransactionRepository
+                .findByStatusAndCreatedAtBetween(PaymentTransaction.Status.SUCCEEDED, start, end)
+                .stream()
                 .map(pt -> pt.getYocoFee() != null ? pt.getYocoFee() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 

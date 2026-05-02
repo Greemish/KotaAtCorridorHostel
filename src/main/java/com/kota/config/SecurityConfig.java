@@ -31,6 +31,9 @@ public class SecurityConfig {
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .securityMatcher("/api/**")
+            // CSRF protection is intentionally disabled for the stateless REST API chain.
+            // All API requests are authenticated via JWT bearer tokens; there is no
+            // session cookie for a cross-site attacker to exploit.
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth

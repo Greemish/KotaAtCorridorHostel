@@ -139,11 +139,12 @@ public class OrderService {
                 || order.getStatus() == Order.Status.COMPLETED) {
             throw new BusinessException("Cannot cancel order in status: " + order.getStatus());
         }
-        order.setStatus(Order.Status.CANCELLED);
-        orderRepository.save(order);
-        if (order.getStatus() == Order.Status.PAID) {
+        Order.Status previousStatus = order.getStatus();
+        if (previousStatus == Order.Status.PAID) {
             inventoryService.returnStock(order);
         }
+        order.setStatus(Order.Status.CANCELLED);
+        orderRepository.save(order);
         notificationService.sendOrderStatusUpdate(order);
     }
 

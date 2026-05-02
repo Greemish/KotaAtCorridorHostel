@@ -81,15 +81,16 @@ public class InventoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient", request.getIngredientId()));
         BigDecimal previous = ingredient.getCurrentStock();
         StockTransaction.TransactionType type = StockTransaction.TransactionType.valueOf(request.getTransactionType());
+        BigDecimal absQty = request.getQuantity().abs();
         BigDecimal newStock;
         if (type == StockTransaction.TransactionType.PURCHASE || type == StockTransaction.TransactionType.RETURN) {
-            newStock = previous.add(request.getQuantity());
+            newStock = previous.add(absQty);
         } else {
-            newStock = previous.subtract(request.getQuantity());
+            newStock = previous.subtract(absQty);
         }
         ingredient.setCurrentStock(newStock);
         ingredientRepository.save(ingredient);
-        recordStockTransaction(ingredient, type, request.getQuantity(), previous, newStock, request.getReason(), null, performedBy);
+        recordStockTransaction(ingredient, type, absQty, previous, newStock, request.getReason(), null, performedBy);
         return toResponse(ingredient);
     }
 

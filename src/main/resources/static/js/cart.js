@@ -75,17 +75,44 @@ function renderCart() {
     const subtotal = item.price * item.quantity;
     total += subtotal;
     const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${item.name}</td>
-      <td>R${item.price.toFixed(2)}</td>
-      <td>
-        <input type="number" class="form-control form-control-sm" style="width:70px"
-               value="${item.quantity}" min="1"
-               onchange="updateQuantity(${item.id}, this.value)">
-      </td>
-      <td>R${subtotal.toFixed(2)}</td>
-      <td><button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${item.id})">Remove</button></td>
-    `;
+
+    const nameCell = document.createElement('td');
+    nameCell.textContent = item.name;
+
+    const priceCell = document.createElement('td');
+    priceCell.textContent = 'R' + item.price.toFixed(2);
+
+    const qtyCell = document.createElement('td');
+    const qtyInput = document.createElement('input');
+    qtyInput.type = 'number';
+    qtyInput.className = 'form-control form-control-sm';
+    qtyInput.style.width = '70px';
+    qtyInput.value = item.quantity;
+    qtyInput.min = 1;
+    qtyInput.dataset.itemId = item.id;
+    qtyInput.addEventListener('change', function() {
+      updateQuantity(parseInt(this.dataset.itemId, 10), parseInt(this.value, 10));
+    });
+    qtyCell.appendChild(qtyInput);
+
+    const subtotalCell = document.createElement('td');
+    subtotalCell.textContent = 'R' + subtotal.toFixed(2);
+
+    const removeCell = document.createElement('td');
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'btn btn-sm btn-outline-danger';
+    removeBtn.textContent = 'Remove';
+    removeBtn.dataset.itemId = item.id;
+    removeBtn.addEventListener('click', function() {
+      removeFromCart(parseInt(this.dataset.itemId, 10));
+    });
+    removeCell.appendChild(removeBtn);
+
+    row.appendChild(nameCell);
+    row.appendChild(priceCell);
+    row.appendChild(qtyCell);
+    row.appendChild(subtotalCell);
+    row.appendChild(removeCell);
     tbody.appendChild(row);
   });
   if (totalEl) totalEl.textContent = 'R' + total.toFixed(2);

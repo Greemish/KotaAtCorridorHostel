@@ -3,6 +3,7 @@ package com.kota.repository;
 import com.kota.model.PaymentTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,7 @@ public interface PaymentTransactionRepository extends JpaRepository<PaymentTrans
     Optional<PaymentTransaction> findByYocoCheckoutId(String yocoCheckoutId);
 
     Optional<PaymentTransaction> findByYocoPaymentId(String yocoPaymentId);
+
+    List<PaymentTransaction> findByStatusAndCreatedAtBetween(
+            PaymentTransaction.Status status, LocalDateTime start, LocalDateTime end);
 }
