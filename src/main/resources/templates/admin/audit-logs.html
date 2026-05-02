@@ -23,12 +23,35 @@ async function loadAuditLogs() {
     document.getElementById('auditTable').innerHTML = '<div class="alert alert-warning">No logs available.</div>';
     return;
   }
-  let html = '<div class="table-responsive"><table class="table table-sm table-striped"><thead class="table-dark"><tr><th>Action</th><th>Entity</th><th>By</th><th>Reason</th><th>Date</th></tr></thead><tbody>';
+  const container = document.createElement('div');
+  container.className = 'table-responsive';
+  const table = document.createElement('table');
+  table.className = 'table table-sm table-striped';
+  const thead = document.createElement('thead');
+  thead.className = 'table-dark';
+  thead.innerHTML = '<tr><th>Action</th><th>Entity</th><th>By</th><th>Reason</th><th>Date</th></tr>';
+  const tbody = document.createElement('tbody');
   logs.forEach(log => {
-    html += '<tr><td>' + log.action + '</td><td>' + log.entityType + ' #' + (log.entityId || '-') + '</td><td>' + (log.performedBy || '-') + '</td><td>' + (log.reason || '-') + '</td><td>' + (log.createdAt ? new Date(log.createdAt).toLocaleString() : '-') + '</td></tr>';
+    const tr = document.createElement('tr');
+    [
+      log.action,
+      (log.entityType || '') + ' #' + (log.entityId || '-'),
+      log.performedBy || '-',
+      log.reason || '-',
+      log.createdAt ? new Date(log.createdAt).toLocaleString() : '-'
+    ].forEach(text => {
+      const td = document.createElement('td');
+      td.textContent = text;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
   });
-  html += '</tbody></table></div>';
-  document.getElementById('auditTable').innerHTML = html;
+  table.appendChild(thead);
+  table.appendChild(tbody);
+  container.appendChild(table);
+  const auditTable = document.getElementById('auditTable');
+  auditTable.textContent = '';
+  auditTable.appendChild(container);
 }
 loadAuditLogs();
 </script>
