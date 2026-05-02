@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Audit Logs')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container py-4">
+  <h1 class="mb-4">Audit Logs</h1>
+  <div id="auditTable">
+    <p class="text-muted">Loading audit logs...</p>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script>
+async function loadAuditLogs() {
+  const token = localStorage.getItem('jwt');
+  const res = await fetch('/api/admin/audit-logs?size=50&sort=createdAt,desc', {
+    headers: {'Authorization': 'Bearer ' + token}
+  });
+  const logs = await res.json();
+  if (!res.ok || !Array.isArray(logs)) {
+    document.getElementById('auditTable').innerHTML = '<div class="alert alert-warning">No logs available.</div>';
+    return;
+  }
+  let html = '<div class="table-responsive"><table class="table table-sm table-striped"><thead class="table-dark"><tr><th>Action</th><th>Entity</th><th>By</th><th>Reason</th><th>Date</th></tr></thead><tbody>';
+  logs.forEach(log => {
+    html += '<tr><td>' + log.action + '</td><td>' + log.entityType + ' #' + (log.entityId || '-') + '</td><td>' + (log.performedBy || '-') + '</td><td>' + (log.reason || '-') + '</td><td>' + (log.createdAt ? new Date(log.createdAt).toLocaleString() : '-') + '</td></tr>';
+  });
+  html += '</tbody></table></div>';
+  document.getElementById('auditTable').innerHTML = html;
+}
+loadAuditLogs();
+</script>
+</body>
+</html>

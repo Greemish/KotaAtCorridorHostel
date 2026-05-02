@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container-fluid py-4">
+  <h1 class="mb-4">Admin Dashboard</h1>
+  <div class="row g-3 mb-4">
+    <article class="col-md-3">
+      <div class="card text-bg-primary">
+        <div class="card-body">
+          <h5 class="card-title">Total Users</h5>
+          <p class="card-text display-6" th:text="${#lists.size(users)}"></p>
+          <a th:href="@{/admin/users}" class="btn btn-light btn-sm">Manage Users</a>
+        </div>
+      </div>
+    </article>
+    <article class="col-md-3">
+      <div class="card text-bg-success">
+        <div class="card-body">
+          <h5 class="card-title">Menu Items</h5>
+          <p class="card-text display-6" th:text="${#lists.size(menuItems)}"></p>
+          <a th:href="@{/admin/menu}" class="btn btn-light btn-sm">Manage Menu</a>
+        </div>
+      </div>
+    </article>
+    <article class="col-md-3">
+      <div class="card text-bg-warning">
+        <div class="card-body">
+          <h5 class="card-title">Stock Alerts</h5>
+          <p class="card-text display-6" th:text="${#lists.size(stockAlerts)}"></p>
+          <a th:href="@{/admin/inventory}" class="btn btn-light btn-sm">View Inventory</a>
+        </div>
+      </div>
+    </article>
+    <article class="col-md-3">
+      <div class="card text-bg-info">
+        <div class="card-body">
+          <h5 class="card-title">Today's Revenue</h5>
+          <p class="card-text display-6" th:text="'R' + ${#numbers.formatDecimal(todayReport.totalRevenue, 1, 2)}"></p>
+          <a th:href="@{/admin/financials}" class="btn btn-light btn-sm">View Reports</a>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="row g-3">
+    <section class="col-md-6">
+      <div class="card">
+        <div class="card-header">Quick Links</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><a th:href="@{/admin/users}">User Management</a></li>
+          <li class="list-group-item"><a th:href="@{/admin/menu}">Menu Management</a></li>
+          <li class="list-group-item"><a th:href="@{/admin/inventory}">Inventory Management</a></li>
+          <li class="list-group-item"><a th:href="@{/admin/financials}">Financial Reports</a></li>
+          <li class="list-group-item"><a th:href="@{/admin/payments}">Payment Transactions</a></li>
+          <li class="list-group-item"><a th:href="@{/admin/audit-logs}">Audit Logs</a></li>
+          <li class="list-group-item"><a th:href="@{/admin/settings}">System Settings</a></li>
+        </ul>
+      </div>
+    </section>
+    <section class="col-md-6">
+      <div class="card">
+        <div class="card-header">Today's Summary</div>
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-6">Total Orders</dt>
+            <dd class="col-sm-6" th:text="${todayReport.totalOrders}"></dd>
+            <dt class="col-sm-6">Revenue</dt>
+            <dd class="col-sm-6" th:text="'R' + ${#numbers.formatDecimal(todayReport.totalRevenue, 1, 2)}"></dd>
+            <dt class="col-sm-6">COGS</dt>
+            <dd class="col-sm-6" th:text="'R' + ${#numbers.formatDecimal(todayReport.totalCogs, 1, 2)}"></dd>
+            <dt class="col-sm-6">Gross Profit</dt>
+            <dd class="col-sm-6" th:text="'R' + ${#numbers.formatDecimal(todayReport.grossProfit, 1, 2)}"></dd>
+            <dt class="col-sm-6">Yoco Fees</dt>
+            <dd class="col-sm-6" th:text="'R' + ${#numbers.formatDecimal(todayReport.totalYocoFees, 1, 2)}"></dd>
+            <dt class="col-sm-6">Net Profit</dt>
+            <dd class="col-sm-6" th:text="'R' + ${#numbers.formatDecimal(todayReport.netProfit, 1, 2)}"></dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
